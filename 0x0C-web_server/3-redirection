@@ -2,15 +2,39 @@
 # Installs nginx web server
 
 apt-get update
+
 apt-get install -y nginx
-echo "Holberton School" > /etc/nginx/html/index.html
+
+mkdir /etc/nginx/html
+
+touch /etc/nginx/html/index.html
+
+echo "Hello World!" > /etc/nginx/html/index.html
+
+printf %s "server {
+     listen      80;
+     listen      [::]:80 default_server;
+     root        /etc/nginx/html;
+     index       index.html index.htm;
+}
+" > /etc/nginx/sites-available/default
+
 echo "server {
     listen 80;
-    listen [::]:80 default_server;
-    root   /etc/nginx/html;
-    index  index.html;
+   listen [::]:80;
+
+    root /var/www/html;
+
+    # Add index.php to the list if you are using PHP
+    index index.html index.htm index.nginx-debian.html;
+
     location /redirect_me {
-        return 301 https://twitter.com/Emmanue17280546;
+        return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4;
     }
-}" > /etc/nginx/sites-available/default
-service nginx restart
+}" | sudo tee /etc/nginx/sites-available/redirect
+
+
+sudo ln -s /etc/nginx/sites-available/redirect /etc/nginx/sites-enabled/
+
+sudo nginx -t
+sudo service nginx reload
